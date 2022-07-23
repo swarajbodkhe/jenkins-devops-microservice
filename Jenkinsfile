@@ -42,10 +42,11 @@ pipeline {
 			}
 			stage('Build Docker Image') {
 				steps {
-					// docker build -t swaraj1905/currency-exchange-devops:$env.Build_TAG
-					dockerImage = docker.build("swaraj1905/currency-exchange-devops:{$env.Build_TAG}")
+					script{
+						// docker build -t swaraj1905/currency-exchange-devops:$env.Build_TAG
+						dockerImage = docker.build("swaraj1905/currency-exchange-devops:{$env.Build_TAG}")
+					}					
 				}
-
 			}
 			
 			stage('Push Docker Image') {
