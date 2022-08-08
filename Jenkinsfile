@@ -20,46 +20,50 @@ pipeline {
 						echo "Build URL -$env.Build_URL"
 				}
 			}
-
-			stage('Compile'){
-				steps{
-					sh 'mvn clean compile'
-				}
-			}
-			stage('Test'){
-				steps {
-						sh 'mvn test'
-				}
-			}
-			stage('Integration Test'){
-				steps {
-						sh 'mvn failsafe:integration-test failsafe:verify'
-				}
-			}
-			stage('Package'){
-				steps {
-						sh 'mvn package -DskipTests'
-				}
-			}
-			stage('Build Docker Image') {
-				steps {
-					script{
-						// docker build -t swaraj1905/currency-exchange-devops:$env.Build_TAG
-						dockerImage = docker.build("swaraj1905/currency-exchange-devops:${env.Build_TAG}")
-					}					
-				}
-			}
+			stage('Remote SSH') {
+      			sshCommand remote: remote, command: "ls -lrt"
+      			sshCommand remote: remote, command: "for i in {1..5}; do echo -n \"Loop \$i \"; date ; sleep 1; done"
+    		}
+		
+			// stage('Compile'){
+			// 	steps{
+			// 		sh 'mvn clean compile'
+			// 	}
+			// }
+			// stage('Test'){
+			// 	steps {
+			// 			sh 'mvn test'
+			// 	}
+			// }
+			// stage('Integration Test'){
+			// 	steps {
+			// 			sh 'mvn failsafe:integration-test failsafe:verify'
+			// 	}
+			// }
+			// stage('Package'){
+			// 	steps {
+			// 			sh 'mvn package -DskipTests'
+			// 	}
+			// }
+			// stage('Build Docker Image') {
+			// 	steps {
+			// 		script{
+			// 			// docker build -t swaraj1905/currency-exchange-devops:$env.Build_TAG
+			// 			dockerImage = docker.build("swaraj1905/currency-exchange-devops:${env.Build_TAG}")
+			// 		}					
+			// 	}
+			// }
 			
-			stage('Push Docker Image') {
-				steps {
-					script{
-						docker.withRegistry('','mydockerhubcred'){
-							dockerImage.push();
-							dockerImage.push('latest');
-						}
+			// stage('Push Docker Image') {
+			// 	steps {
+			// 		script{
+			// 			docker.withRegistry('','mydockerhubcred'){
+			// 				dockerImage.push();
+			// 				dockerImage.push('latest');
+			// 			}
 						
-					}
-				}
+			// 		}
+			// 	}
 				
 			}
 		}
